@@ -14,3 +14,6 @@ $ python3 ./parse.py data/*csv
 
 * 申請進入山地管制區統計資料 - https://data.gov.tw/dataset/41416
 * 歷年申請進入山地管制區統計資料 - https://data.gov.tw/dataset/57021
+
+原始資料來源授權為政府資料開放授權條款－第1版。
+The dataset is licensed under Open Government Data License, version 1.0.
