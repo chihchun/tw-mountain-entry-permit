@@ -1,7 +1,9 @@
 
 # 分析內政部警政署歷年申請進入山地管制區統計資料
 
-將內政部警政署歷年申請進入山地管制區統計資料之 CSV 檔案，轉成 SQLite 資料庫，供後續分析與視覺化。
+小程式將內政部警政署歷年申請進入山地管制區統計資料之 CSV 檔案轉成 SQLite 資料庫，供後續分析與視覺化。
+
+This script parse the csv of Mountain Entry Permit applications into SQLite database, the policy permit regulated by National Security Law is needed for trekking in Taiwan.
 
 ## 使用方法
 ```bash
