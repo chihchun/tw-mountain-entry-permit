@@ -21,11 +21,20 @@ def parse(filename, c):
         year = "%d" % (1911+int(match.group(1)))
         date = "%s-%s-%s" % (year, match.group(2), match.group(3))
         applicationid = "%s-%s" % (year, row[0])
-        c.execute("INSERT INTO applications VALUES ('%s','%s', '%s', %s, %s, '%s')" % (applicationid, date, year, row[2], row[3], row[4]))
+        people = row[3]
+        c.execute("INSERT INTO applications VALUES ('%s','%s', '%s', %s, %s, '%s')" % (applicationid, date, year, row[2], people, row[4]))
         # break down locations as row in location table.
         for area in row[4].split("/"):
-            mountain = area.split('(')[0]
-            c.execute("INSERT INTO location VALUES ('%s', '%s', '%s', '%s', '%s', '%s')" % (applicationid, date, year, area, row[3], mountain))
+            match = re.search(r'(^[\w、()]+)\((\w{3})(\w+)\)$', area)
+            if(match == None):
+                # Yes, there is application going nowhere.
+                continue
+            # make you easy to read
+            mountain = match[1]
+            city = match[2]
+            district = match[3]
+            # mountain = area.split('(')[0]
+            c.execute("INSERT INTO location VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (applicationid, date, year, people, row[4], city, district, mountain))
 
 if __name__ == "__main__":
     # always recreate the db
@@ -36,7 +45,7 @@ if __name__ == "__main__":
     c = conn.cursor()
     # Create table
     c.execute('''CREATE TABLE applications (id int, date text, year int, days int, people int, plan text)''')
-    c.execute('''CREATE TABLE location (id int, date text, year int, area text, people int, mountain text)''')
+    c.execute('''CREATE TABLE location (id int, date text, year int, people int, area text, city text, district text, mountain text)''')
 
     # parse every csv file passed in.
     for filename in sys.argv[1:]:
