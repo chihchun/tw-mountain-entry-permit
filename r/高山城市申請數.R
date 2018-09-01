@@ -30,11 +30,24 @@ dbGetQuery(con, 'SELECT * FROM applications WHERE year != "2018" AND id in (SELE
   geom_text(stat='count',aes(label=..count.., x=factor(year)), vjust=2)
 ggsave("201808/chart/南投縣歷年申請進入山地管制區統計.png", plot = last_plot(), device = "png", dpi = 600)
 
+
+# 花蓮縣歷年申請進入山地管制區統計
+dbGetQuery(con, 'SELECT * FROM applications WHERE year != "2018" AND id in (SELECT DISTINCT id from location where city ="花蓮縣")') %>% 
+  ggplot() +
+  geom_bar(aes(x = factor(year)), stat = "count") + 
+  labs(title = "花蓮歷年申請進入山地管制區統計", caption ="資料來源內政部警政署 20180901") +
+  xlab("年份") +
+  ylab("申請件數") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  geom_text(stat='count',aes(label=..count.., x=factor(year)), vjust=2)
+ggsave("201808/chart/花蓮縣歷年申請進入山地管制區統計.png", plot = last_plot(), device = "png", dpi = 600)
+
+
 # 花蓮縣歷年申請進入山地管制區統計
 dbGetQuery(con, 'SELECT * FROM applications WHERE year != "2018" AND plan != "慕谷慕魚(花蓮縣秀林鄉)" AND plan != "清水溪上游(花蓮縣秀林鄉)" AND id in (SELECT DISTINCT id from location where city ="花蓮縣")') %>% 
   ggplot() +
   geom_bar(aes(x = factor(year)), stat = "count") + 
-  labs(title = "花蓮歷年申請進入山地管制區統計", caption ="資料來源內政部警政署 20180901") +
+  labs(title = "花蓮歷年申請進入山地管制區統計 扣去慕谷慕魚,清水溪上游", caption ="資料來源內政部警政署 20180901") +
   xlab("年份") +
   ylab("申請件數") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
