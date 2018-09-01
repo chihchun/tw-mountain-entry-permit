@@ -21,6 +21,22 @@ ggthemr('grass')
 
 # 熱門地點
 location_db  %>%
+  filter(year == 2018) %>% 
+  group_by(mountain) %>%
+  summarise(n = n()) %>%
+  arrange(mountain, .by_group = TRUE) %>%
+  filter(n > 1500) %>%
+  ggplot() + 
+  geom_col(aes(x = mountain, y=n), show.legend = TRUE) +
+  labs(title = "2018 年 8 月以前山地管制區超過三千申請之熱門山區", caption ="資料來源內政部警政署 20180901") +
+  xlab("山區") +
+  ylab("申請次數") +
+  geom_text(stat='identity', aes(label=n, x=mountain, y=n), vjust  = 2) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggsave("201808/chart/2018 年山地管制區超過三千申請之熱門山區.png", plot = last_plot(), device = "png", dpi = 600)
+
+
+location_db  %>%
   filter(year == 2017) %>% 
   group_by(mountain) %>%
   summarise(n = n()) %>%
