@@ -26,13 +26,20 @@ def parse(filename, c):
         # break down locations as row in location table.
         for area in row[4].split("/"):
             match = re.search(r'(^[\w、()]+)\((\w{3})(\w+)\)$', area)
+
             if(match == None):
                 # Yes, there is application going nowhere.
                 continue
+
             # make you easy to read
             mountain = match[1]
             city = match[2]
             district = match[3]
+
+            # clean up typos
+            if(mountain == "水樣森林"):
+                mountain = "水漾森林"
+
             # mountain = area.split('(')[0]
             c.execute("INSERT INTO location VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (applicationid, date, year, people, row[4], city, district, mountain))
 
