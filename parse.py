@@ -53,6 +53,10 @@ if __name__ == "__main__":
     # Create table
     c.execute('''CREATE TABLE applications (id int, date text, year int, days int, people int, plan text)''')
     c.execute('''CREATE TABLE location (id int, date text, year int, people int, area text, city text, district text, mountain text)''')
+    c.execute('''CREATE UNIQUE INDEX index_applications_id on applications (id)''')
+    c.execute('''CREATE INDEX index_location_id on location (id)''')
+    c.execute('''CREATE INDEX index_mountain on location (mountain)''')
+    c.execute('''CREATE INDEX index_area on location (city, district, mountain)''')
 
     # parse every csv file passed in.
     for filename in sys.argv[1:]:
