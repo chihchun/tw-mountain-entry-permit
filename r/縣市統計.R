@@ -18,8 +18,6 @@ library('ggthemr')
 ggthemr('grass')
 
 
-
-
 # 各縣市山地管制區申請統計
 dbGetQuery(con, '
 SELECT DISTINCT id, city FROM location WHERE year != 2018 AND id not in 
@@ -28,13 +26,30 @@ SELECT DISTINCT id, city FROM location WHERE year != 2018 AND id not in
   group_by(city) %>%
   summarise(n = n()) %>%
   ggplot() + 
-  geom_col(aes(x = city, y=n), show.legend = TRUE) +
+  geom_col(aes(x = city, y=n), show.legend = TRUE, position = "stack") +
   labs(title = "2012-2017 年各縣市山地管制區申請統計", caption ="資料來源內政部警政署 20180901") +
   xlab("都市") +
   ylab("申請次數") +
   geom_text(stat='identity', aes(label=n, x=city, y=n), vjust  = 2) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ggsave("201808/chart/2012-2017 年各縣市山地管制區申請統計.png", plot = last_plot(), device = "png", dpi = 600)
+
+# 各縣市山地管制區申請統計依照年度分別統計
+dbGetQuery(con, '
+SELECT DISTINCT id, city, year FROM location WHERE year != 2018 AND id not in 
+(SELECT id FROM applications WHERE plan == "慕谷慕魚(花蓮縣秀林鄉)" OR plan == "清水溪上游(花蓮縣秀林鄉)" OR plan == "砂婆澢溪(花蓮縣秀林鄉)")'
+) %>%
+  group_by(city, year) %>%
+  summarise(n = n()) %>%
+  ggplot() +
+  geom_bar(aes(x = city, y=n,  fill=year, colour=year), stat = "identity") +
+  labs(title = "2012-2017 年各縣市山地管制區申請統計", caption ="資料來源內政部警政署 20180901") +
+  xlab("都市") +
+  ylab("申請次數") +
+  geom_text(aes(label=n, x=city, y=n), position = position_stack(vjust = 0.5), size=2.5) +
+  stat_summary(fun.y = sum, aes(x=city, y=n, label = ..y.., group = city), geom = "text", vjust = -1, color='white', size=2.5) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggsave("201808/chart/2012-2017 年各縣市山地管制區申請統計-年度分別統計.png", plot = last_plot(), device = "png", dpi = 600)
 
 # 2018 年各縣市山地管制區申請統計
 dbGetQuery(con, '
